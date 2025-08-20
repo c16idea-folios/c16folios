@@ -931,15 +931,12 @@
                         var newOption = new Option(client.formatted_name, client.id + '|' + client.person_type, true, true);
                         $(newOption).data('legal-representative', client.legal_representative || '');
 
-                        // Agregar la nueva opción a los selects de cliente y seleccionarla
-                        $('#client, #client_e').append(newOption).trigger('change');
+                        // Agregar la nueva opción al select de cliente (crear acto)
+                        $('#client').append(newOption).trigger('change');
 
                         // Cerrar el modal y mostrar notificación
                         $('#modal_add_client').modal('hide');
                         toastr.success('Cliente agregado exitosamente.');
-
-                        // Limpiar el formulario
-                        $('#form_add_client')[0].reset();
 
                     } else {
                         toastr.error('Hubo un error al agregar el cliente.');
