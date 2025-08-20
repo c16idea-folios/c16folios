@@ -43,7 +43,14 @@ class ClientController extends Controller
             $validated['picture_path'] = $request->file('picture_upload')->store('clients', 'public');
         }
 
-        Client::create($validated);
+        $cliente = Client::create($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'client' => $cliente
+            ]);
+        }
         return redirect()->route('clients.admin')->with('success', 'Cliente creado correctamente.');
     }
 
@@ -72,9 +79,9 @@ class ClientController extends Controller
             'observations' => 'nullable|string',
             'picture_upload' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ]);
-       $client = Client::find($request->input('id')); 
+       $client = Client::find($request->input('id'));
 
-  
+
         if ($request->hasFile('picture_upload')) {
             if ($client->picture_path) {
                 Storage::disk('public')->delete($client->picture_path);
@@ -89,7 +96,7 @@ class ClientController extends Controller
 
     public function destroy(Request $request)
     {
-        $item = Client::find($request->input('id')); 
+        $item = Client::find($request->input('id'));
         if(!($item)){
             return redirect()->back()->withErrors(['order' => 'El elemento ya no existe.']);
         }
