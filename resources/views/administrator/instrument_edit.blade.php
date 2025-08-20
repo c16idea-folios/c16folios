@@ -325,9 +325,9 @@
                                 </select>
                             </div>
 
-                            <div class="form-group" id="legal_representative_container">
-                                <label for="legal_representative" class="form-control-label">Representante legal</label>
-                                <input type="text" name="legal_representative" class="form-control" id="legal_representative" value="">
+                            <div class="form-group" id="legal_representative_container_add_act">
+                                <label for="legal_representative_add_act" class="form-control-label">Representante legal</label>
+                                <input type="text" name="legal_representative" class="form-control" id="legal_representative_add_act" value="">
                             </div>
 
 
@@ -371,9 +371,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline btn-outline-dark" id="btn_add_client_from_instrument" data-toggle="modal" data-target="#modal_add_client">Agregar Cliente</button>
+
+                    <div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -705,8 +709,9 @@
 </div>
 <!--end: Modal Delete act -->
 
-
-
+<!-- start: Modal add client -->
+@include('partials.modal_create_client', ['formClass' => 'ajax-form'])
+<!-- end: Modal add client -->
 
 <input type="hidden" name="_token" id="token_ajax" value="{{ Session::token() }}">
 <!-- end:: Content -->
@@ -870,6 +875,102 @@
     })
 </script>
 
+<script>
+
+    /**
+     * Modal add client
+     */
+    function changePerson(personType){
+        $('#modal_add_client #legal_representative_container').hide().find('input').prop('disabled', true);
+        $('#modal_add_client #denomination_container').hide().find('select').prop('disabled', true);
+        $('#modal_add_client #last_name_container').hide().find('input').prop('disabled', true);
+        $('#modal_add_client #second_last_name_container').hide().find('input').prop('disabled', true);
+
+        if(personType=="física"){
+            $('#modal_add_client #last_name_container').show().find('input').prop('disabled', false);
+            $('#modal_add_client #second_last_name_container').show().find('input').prop('disabled', false);
+        }else if(personType=="moral"){
+            $('#modal_add_client #legal_representative_container').show().find('input').prop('disabled', false);
+            $('#modal_add_client #denomination_container').show().find('select').prop('disabled', false);
+        }
+    }
+
+    $(document).ready(function() {
+        // Evento change
+        $('#person_type').change(function() {
+            var personType = $(this).val();
+            changePerson(personType);
+        });
+
+        // Establecer el estado inicial
+        $('#person_type').trigger('change');
+
+        // Submit de nuevo cliente
+        $('#form_add_client').on('submit', function(e) {
+            e.preventDefault(); // Evitar el envío tradicional del formulario
+
+            var formData = new FormData(this);
+            var url = "{{ route('clients.admin') }}";
+
+            showOverlay()
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        var client = response.client;
+
+                        // Formatear el nombre del cliente
+                        var clientName = '';
+
+                        // Crear la nueva opción para el select
+                        var newOption = new Option(client.formatted_name, client.id + '|' + client.person_type, true, true);
+                        $(newOption).data('legal-representative', client.legal_representative || '');
+
+                        // Agregar la nueva opción a los selects de cliente y seleccionarla
+                        $('#client, #client_e').append(newOption).trigger('change');
+
+                        // Cerrar el modal y mostrar notificación
+                        $('#modal_add_client').modal('hide');
+                        toastr.success('Cliente agregado exitosamente.');
+
+                        // Limpiar el formulario
+                        $('#form_add_client')[0].reset();
+
+                    } else {
+                        toastr.error('Hubo un error al agregar el cliente.');
+                    }
+                },
+                error: function(xhr) {
+                    // Manejo de errores de validación u otros
+                    var errors = xhr.responseJSON.errors;
+                    var errorMsg = 'Error al agregar el cliente. Por favor, verifique los datos.<br>';
+                    $.each(errors, function(key, value) {
+                        errorMsg += value[0] + '<br>';
+                    });
+                    toastr.error(errorMsg);
+                },
+                complete: function() {
+                    hideOverlay();
+                }
+            });
+        });
+
+        // Limpiar el formulario al cerrar el modal
+        $('#modal_add_client').on('hidden.bs.modal', function () {
+            $(this).find('form')[0].reset();
+            $('#person_type').trigger('change');
+        });
+    });
+
+    /*
+    * END - Modal add client
+    */
+</script>
 @endsection
 
 @section('js_optional_vendors')

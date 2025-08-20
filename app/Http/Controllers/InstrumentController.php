@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Act;
 use App\Models\Appearer;
 use App\Models\Client;
+use App\Models\Denomination;
 use App\Models\FileType;
 use App\Models\Instrument;
 use App\Models\InstrumentAct;
@@ -152,19 +153,6 @@ class InstrumentController extends Controller
         }
 
 
-        // Procesar los nombres dinámicos en una sola transformación
-        foreach ($clients as $client) {
-            if ($client->person_type === "moral") {
-                $client["formatted_name"] = $client->name .
-                    ($client->denomination ? " " . $client->denomination->acronym : '');
-            } elseif ($client->person_type === "física") {
-                $client["formatted_name"] = $client->name . " " . $client->last_name . " " . $client->second_last_name;
-            } else {
-                $client["formatted_name"] = '';
-            }
-            $client["formatted_name"] = strtoupper($client["formatted_name"]);
-        }
-
         $acts_table = InstrumentAct::where("instrument_id", $id)->get(["*"]);
 
         $instrument_acts = InstrumentAct::with(['act', 'client.denomination'])
@@ -195,8 +183,11 @@ class InstrumentController extends Controller
         // Obtén los appearers relacionados con los instrument_act_ids obtenidos
         $appearers = Appearer::whereIn('instrument_act_id', $instrumentActIds)->get();
 
+        // Obtener las denominaciones, para modal crear cliente
+        $denominations = Denomination::orderBy('order', 'asc')->get();
 
-        return view('administrator.instrument_edit', compact('instrument', 'users', 'clients', 'acts', 'acts_table', 'instrument_acts', 'appearers'));
+
+        return view('administrator.instrument_edit', compact('instrument', 'users', 'clients', 'acts', 'acts_table', 'instrument_acts', 'appearers', 'denominations'));
     }
 
 

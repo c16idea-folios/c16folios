@@ -21,7 +21,7 @@ class ClientController extends Controller
             'rfc' => 'nullable',
 
             'person_type' => 'in:física,moral',
-            'name' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'second_last_name' => 'nullable|string|max:255',
             'denomination_id' => 'exists:denominations,id',
@@ -46,6 +46,7 @@ class ClientController extends Controller
         $cliente = Client::create($validated);
 
         if ($request->ajax()) {
+            $cliente->append('formatted_name');
             return response()->json([
                 'success' => true,
                 'client' => $cliente

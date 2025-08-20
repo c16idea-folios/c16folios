@@ -166,7 +166,7 @@ var KTDatatables = function() {
 jQuery(document).ready(function() {
     KTDatatables.init();
 
-    $('#legal_representative_container').hide().find('select').prop('disabled', true);
+    $('#legal_representative_container_add_act').hide().find('select').prop('disabled', true);
 
     $('#delete-button-act').click(function() {
 
@@ -209,9 +209,9 @@ jQuery(document).ready(function() {
             var id = parts[0]; // El ID
             var person_type = parts[1]; // El tipo de persona
             if(person_type=="moral"){
-                $('#legal_representative_container').show().find('select').prop('disabled', false);
+                $('#legal_representative_container_add_act').show().find('select').prop('disabled', false);
             }else{
-                $('#legal_representative_container').hide().find('select').prop('disabled', true);
+                $('#legal_representative_container_add_act').hide().find('select').prop('disabled', true);
             }
 
 
@@ -221,7 +221,7 @@ jQuery(document).ready(function() {
             var legalRepresentative = selectedOption.data('legal-representative') || '';
 
             // Actualizar el campo de texto con el valor del representante legal
-            $('#legal_representative').val(legalRepresentative);
+            $('#legal_representative_add_act').val(legalRepresentative);
 
           });
 
@@ -297,7 +297,6 @@ jQuery(document).ready(function() {
           $('#legal_representative_appearer_e').val(legalRepresentative);
 
         });
-
 
 });
 
