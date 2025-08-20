@@ -238,7 +238,7 @@ class InstrumentController extends Controller
             return redirect()->back()->withErrors(['user' => 'El elemento ya no existe.']);
         }
 
-       
+
 
         $element->delete();
 
@@ -359,14 +359,14 @@ class InstrumentController extends Controller
         if (!in_array(mb_strtoupper($format), ['PDF', 'WORD'])) {
             return response()->json(['error' => 'Formato inválido. Use "pdf" o "word".'], 400);
         }
-    
+
         // Obtener los datos
         $instrumentActs = Instrument::whereBetween('no', [$min, $max])
             ->with('acts')
             ->get()
             ->pluck('acts')
             ->flatten();
-    
+
         $extracts = [];
         foreach ($instrumentActs as $instrumentAct) {
             $extract = ActService::getFormatExtract($instrumentAct);
@@ -382,9 +382,9 @@ class InstrumentController extends Controller
                 'Content-Disposition' => 'inline; filename="extractos.pdf"'
             ]);
         }
-    
+
         // Generar Word
-       
+
     if ($format === 'WORD') {
         $phpWord = new PhpWord();
         $section = $phpWord->addSection([
