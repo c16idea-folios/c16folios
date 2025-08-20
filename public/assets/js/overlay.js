@@ -12,7 +12,7 @@ Pace.on("done", function(){
     }else{
         $('#overlay-pilates').delay(100).fadeOut(200);
     }
-    
+
 });
 
 function showOverlay(){
@@ -21,7 +21,7 @@ $("#overlay-pilates").show();
 function hideOverlay(){
 $("#overlay-pilates").delay(100).fadeOut(200);
 }
-$("form").submit(function (e) {
+$("form:not(.ajax-form)").submit(function (e) {
 showOverlay();
 });
 
