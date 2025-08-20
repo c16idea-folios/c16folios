@@ -372,7 +372,7 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline btn-outline-dark" id="btn_add_client_from_instrument" data-toggle="modal" data-target="#modal_add_client">Agregar Cliente</button>
+                    <button type="button" class="btn btn-outline btn-outline-dark" data-toggle="modal" data-target="#modal_add_client" data-target-select="#client">Agregar Cliente</button>
 
                     <div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -587,9 +587,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline btn-outline-dark" data-toggle="modal" data-target="#modal_add_client" data-target-select="#appearer">Agregar Cliente</button>
+                    <div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -905,6 +908,11 @@
         // Establecer el estado inicial
         $('#person_type').trigger('change');
 
+        $('#modal_add_client').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Botón que activó el modal
+            targetSelect = button.data('target-select'); // Extraer info del data-target-select
+        });
+
         // Submit de nuevo cliente
         $('#form_add_client').on('submit', function(e) {
             e.preventDefault(); // Evitar el envío tradicional del formulario
@@ -923,16 +931,20 @@
                 success: function(response) {
                     if (response.success) {
                         var client = response.client;
-
-                        // Formatear el nombre del cliente
-                        var clientName = '';
+                        var optionValue = client.id + '|' + client.person_type;
 
                         // Crear la nueva opción para el select
-                        var newOption = new Option(client.formatted_name, client.id + '|' + client.person_type, true, true);
-                        $(newOption).data('legal-representative', client.legal_representative || '');
+                        var newOption = new Option(client.formatted_name, optionValue, false, false);
+                        $(newOption).attr('data-legal-representative', client.legal_representative || '');
 
-                        // Agregar la nueva opción al select de cliente (crear acto)
-                        $('#client').append(newOption).trigger('change');
+                        // Agregar la nueva opción a todos los selects donde se listan clientes
+                        $('#client, #client_e, #appearer, #appearer_e').append($(newOption).clone());
+
+
+                        // En el select de destino, establecer el valor para seleccionarlo
+                        if (targetSelect) {
+                            $(targetSelect).val(optionValue).trigger('change');
+                        }
 
                         // Cerrar el modal y mostrar notificación
                         $('#modal_add_client').modal('hide');
@@ -961,6 +973,7 @@
         $('#modal_add_client').on('hidden.bs.modal', function () {
             $(this).find('form')[0].reset();
             $('#person_type').trigger('change');
+            targetSelect = null; // Limpiar el selector de destino
         });
     });
 
