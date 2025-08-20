@@ -14,16 +14,14 @@ use Illuminate\Support\Facades\Storage;
 
 class InstrumentActController extends Controller
 {
-   
+
     public function client()
-{
-    return $this->belongsTo(Client::class, 'client_id');
-}
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 
     public function index()
     {
-        
-       
         return view('administrator.instrument_act');
     }
 
@@ -54,8 +52,8 @@ class InstrumentActController extends Controller
 
         $clientData = $request->client_id;
 
-// Separar el valor en id y person_type
-list($clientId, $personType) = explode('|', $clientData);
+        // Separar el valor en id y person_type
+        list($clientId, $personType) = explode('|', $clientData);
 
 
         // Crear un nuevo registro en la base de datos
@@ -133,17 +131,12 @@ list($clientId, $personType) = explode('|', $clientData);
             return redirect()->back()->withErrors(['user' => 'El elemento ya no existe.']);
         }
 
-
-
         $element->delete();
         return back()->with('success', 'Elemento eliminado correctamente.');
     }
 
     public function dataTable(Request $request)
     {
-
-
-        
         $item = new InstrumentAct();
         $items = $item->getDataTable($request,$request->input('instrument_id'));
         return response()->json($items);
@@ -151,9 +144,6 @@ list($clientId, $personType) = explode('|', $clientData);
 
     public function dataTableIndex(Request $request)
     {
-
-
-        
         $item = new InstrumentAct();
         $items = $item->getDataTableIndex($request);
         return response()->json($items);
