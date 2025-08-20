@@ -47,7 +47,7 @@ var KTDatatables = function() {
                 { data: 'residence'},
                 { data: 'observations'},
                 { data: 'legal_representative'},
-         
+
             ],
             columnDefs: [
                 {
@@ -75,7 +75,7 @@ var KTDatatables = function() {
                     filename: 'Informe de clientes.xlsx',
                     columnsNoCustomRender: [],
                     columnsAlternateData: {
-                     
+
                     }
                 })
             ],
@@ -103,32 +103,28 @@ var KTDatatables = function() {
 jQuery(document).ready(function() {
     KTDatatables.init();
 
-
-
-    $('#delete-button').click(function() { 
+    $('#delete-button').click(function() {
         $('#id_delete').val( $('#id_edit').val());
-       $('#modal_delete').modal('show');
-        });
+        $('#modal_delete').modal('show');
+    });
 
 
-        var personType = $('#person_type').val();
+    var personType = $('#person_type').val();
 
-        changePerson(personType);
-        $('#person_type').change(function() {
-             personType = $(this).val();
-             changePerson(personType);
-        });
-        $('#person_type_e').change(function() {
-         var   personTypeE = $(this).val();
-            changePersonEdit(personTypeE);
-       });
-    
-       
+    changePerson(personType);
+    $('#person_type').change(function() {
+            personType = $(this).val();
+            changePerson(personType);
+    });
+    $('#person_type_e').change(function() {
+        var   personTypeE = $(this).val();
+        changePersonEdit(personTypeE);
+    });
+
 });
 
 
 function changePerson(personType){
-
 
     $('#legal_representative_container').hide().find('input').prop('disabled', true);
     $('#denomination_container').hide().find('select').prop('disabled', true);
@@ -142,11 +138,9 @@ function changePerson(personType){
         $('#legal_representative_container').show().find('input').prop('disabled', false);
         $('#denomination_container').show().find('select').prop('disabled', false);
     }
-
 }
 
 function changePersonEdit(personType){
-
 
     $('#legal_representative_container_e').hide().find('input').prop('disabled', true);
     $('#denomination_container_e').hide().find('select').prop('disabled', true);
@@ -194,13 +188,11 @@ function editElement(data){
 
 
 
-$("#id_edit").val(data.id);
+    $("#id_edit").val(data.id);
 
-var personType = $('#person_type_e').val();
-changePersonEdit(personType);
+    var personType = $('#person_type_e').val();
+    changePersonEdit(personType);
 
-$('#modal_edit').modal('show');
+    $('#modal_edit').modal('show');
 
-    }
-    
-
+}
