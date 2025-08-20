@@ -48,10 +48,10 @@ var KTDatatables = function() {
                 { data: 'legal_representative'},
                 { data: 'cost'},
                 { data: 'invoice_text'},
-         
+
             ],
             columnDefs: [
-              
+
                 {
                     'targets': 0,
                     'type': "alt-string",
@@ -65,7 +65,7 @@ var KTDatatables = function() {
                 },
                 {
                   'targets': 5,
-               
+
                   'render': function(data, type, full, meta) {
 
                       return "$"+data;
@@ -122,10 +122,10 @@ var KTDatatables = function() {
                       { data: 'appearer'},
                       { data: 'legal_representative'},
                       { data: 'observations'}
-               
+
                   ],
                   columnDefs: [
-                    
+
                       {
                           'targets': 0,
                           'type': "alt-string",
@@ -133,7 +133,7 @@ var KTDatatables = function() {
                           'orderable': false,
                           'className': 'dt-body-center',
                           'render': function(data, type, full, meta) {
-      
+
                               return `<div  onclick='editElementAppearer(${JSON.stringify(full)})' class="pencil-edit"><i class="icon-2x text-dark-50 flaticon-edit"></i></div>`;
                           }
                       }
@@ -144,9 +144,9 @@ var KTDatatables = function() {
                   order: [
                       [0, 'desc']
                   ]
-      
+
               });
-      
+
 
 
     };
@@ -168,13 +168,13 @@ jQuery(document).ready(function() {
 
     $('#legal_representative_container').hide().find('select').prop('disabled', true);
 
-    $('#delete-button-act').click(function() { 
+    $('#delete-button-act').click(function() {
 
         $('#id_delete_act').val( $('#id_edit_act').val());
        $('#modal_delete_act').modal('show');
         });
 
-        $('#delete-button-appearer').click(function() { 
+        $('#delete-button-appearer').click(function() {
 
           $('#id_delete_appearer').val( $('#id_edit_appearer').val());
          $('#modal_delete_appearer').modal('show');
@@ -182,26 +182,26 @@ jQuery(document).ready(function() {
 
 
 
-          $('#delete-button').click(function() { 
+          $('#delete-button').click(function() {
 
             $('#id_delete').val( $('#instrument_id').val());
             $('#modal_delete').modal('show');
-            
+
           });
 
-          $('#save-button').click(function() { 
+          $('#save-button').click(function() {
             $('#form_update').submit();
 
           });
 
-          
-          
-  
-        
+
+
+
+
 
 
         $('#client').change(function() {
-        
+
             var selectedValue = $(this).val(); // Obtén el valor del select
 
             // Dividir el valor en id y person_type
@@ -213,20 +213,20 @@ jQuery(document).ready(function() {
             }else{
                 $('#legal_representative_container').hide().find('select').prop('disabled', true);
             }
-      
+
 
             var selectedOption = $(this).find(':selected');
-        
+
             // Obtener el valor del representante legal desde el atributo "data-legal-representative"
             var legalRepresentative = selectedOption.data('legal-representative') || '';
-            
+
             // Actualizar el campo de texto con el valor del representante legal
             $('#legal_representative').val(legalRepresentative);
 
           });
 
         $('#client_e').change(function() {
-        
+
           var selectedValue = $(this).val(); // Obtén el valor del select
 
           // Dividir el valor en id y person_type
@@ -241,18 +241,18 @@ jQuery(document).ready(function() {
 
 
           var selectedOption = $(this).find(':selected');
-        
+
           // Obtener el valor del representante legal desde el atributo "data-legal-representative"
           var legalRepresentative = selectedOption.data('legal-representative') || '';
-          
+
           // Actualizar el campo de texto con el valor del representante legal
           $('#legal_representative_e').val(legalRepresentative);
-    
+
         });
 
 
         $('#appearer').change(function() {
-        
+
           var selectedValue = $(this).val(); // Obtén el valor del select
 
           // Dividir el valor en id y person_type
@@ -264,18 +264,18 @@ jQuery(document).ready(function() {
           }else{
               $('#legal_representative_container_appearer').hide().find('select').prop('disabled', true);
           }
-    
+
           var selectedOption = $(this).find(':selected');
-        
+
           // Obtener el valor del representante legal desde el atributo "data-legal-representative"
           var legalRepresentative = selectedOption.data('legal-representative') || '';
-          
+
           // Actualizar el campo de texto con el valor del representante legal
           $('#legal_representative_appearer').val(legalRepresentative);
         });
 
         $('#appearer_e').change(function() {
-        
+
           var selectedValue = $(this).val(); // Obtén el valor del select
 
           // Dividir el valor en id y person_type
@@ -289,16 +289,16 @@ jQuery(document).ready(function() {
           }
 
           var selectedOption = $(this).find(':selected');
-        
+
           // Obtener el valor del representante legal desde el atributo "data-legal-representative"
           var legalRepresentative = selectedOption.data('legal-representative') || '';
-          
+
           // Actualizar el campo de texto con el valor del representante legal
           $('#legal_representative_appearer_e').val(legalRepresentative);
-    
+
         });
 
-       
+
 });
 
 
@@ -402,7 +402,7 @@ jQuery(document).ready(function() {
         required: true
       }
     ],
-    
+
     "Comisión mercantil": [
       {
         title: "A favor de:",
@@ -461,15 +461,15 @@ jQuery(document).ready(function() {
     function generateInputsEdit(option) {
       // Limpiar el contenido previo
       $('#dinamic_inputs_e').empty();
-  
+
       // Obtener la configuración de inputs para la opción seleccionada
       const inputs = inputConfigurations[option] || [];
-  
+
       // Generar y agregar cada input al div
       inputs.forEach(input => {
         const isRequired = input.required ? 'required' : '';
         let inputElement = '';
-  
+
         // Crear el input según su tipo
         switch (input.type_input) {
           case 'text':
@@ -485,7 +485,7 @@ jQuery(document).ready(function() {
           default:
             console.warn(`Tipo de input no reconocido: ${input.type_input}`);
         }
-  
+
         // Crear el contenedor del input
         const inputContainer = `
           <div class="form-group" id="${input.container_id}_e">
@@ -493,7 +493,7 @@ jQuery(document).ready(function() {
             ${inputElement}
           </div>
         `;
-  
+
         // Agregar el input al div
         $('#dinamic_inputs_e').append(inputContainer);
       });
@@ -512,8 +512,8 @@ jQuery(document).ready(function() {
       const selectedOption = $(this).find('option:selected').text();
       generateInputsEdit(selectedOption);
     });
-  
-  
+
+
 
 
 
@@ -553,11 +553,11 @@ $("#id_edit_act").val(data.id);
 $('#modal_edit_act').modal('show');
 
     }
-    
+
 
 
     function editElementAppearer(data){
-      
+
     $("#instrument_act_e").val(data.instrument_act_id);
     $("#appearer_e").val(`${data.appearer_id}|${data.appearer_person_type}`);
     $("#legal_representative_appearer_e").val(data.legal_representative);
@@ -579,7 +579,7 @@ $('#modal_edit_act').modal('show');
           $('#legal_representative_container_appearer_e').hide().find('select').prop('disabled', true);
       }
 
-      
+
 
     $('#modal_edit_appearer').modal('show');
 
