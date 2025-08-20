@@ -108,11 +108,11 @@ class Client extends Model
         $item['item']=json_decode($item);
 
         if( $item['person_type']=="moral"){
-         $denomination = Denomination::find($item['denomination_id']); 
+         $denomination = Denomination::find($item['denomination_id']);
          if( $denomination){
             $item["client"]=$item["name"]." ".$denomination->acronym;
          }
-     
+
         }else if( $item['person_type']=="física"){
          $item["client"]=$item["name"]." ".$item["last_name"]." ".$item["second_last_name"];
         }else{
@@ -131,6 +131,19 @@ class Client extends Model
                 if (stristr(($obj[$colum]), $search))
                     $item = $obj;
             return $item;
+    }
+
+    public function getFormattedNameAttribute()
+    {
+        $name = '';
+        if ($this->person_type === "moral") {
+            $name = $this->name .
+                ($this->denomination ? " " . $this->denomination->acronym : '');
+        } elseif ($this->person_type === "física") {
+            $name = $this->name . " " . $this->last_name . " " . $this->second_last_name;
+        }
+
+        return strtoupper(trim($name));
     }
 
 }
