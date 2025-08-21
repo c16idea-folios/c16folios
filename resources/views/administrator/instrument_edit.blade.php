@@ -412,7 +412,9 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline btn-outline-dark" data-toggle="modal" data-target="#modal_add_client" data-target-select="#client">Agregar Cliente</button>
+                    <button type="button" class="btn btn-outline btn-outline-dark" data-toggle="modal" data-target="#modal_add_client" data-target-select="#client">
+                        <i class="fas fa-plus" style="font-size: 11px;"></i> Cliente
+                    </button>
 
                     <div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -628,7 +630,9 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline btn-outline-dark" data-toggle="modal" data-target="#modal_add_client" data-target-select="#appearer">Agregar Cliente</button>
+                    <button type="button" class="btn btn-outline btn-outline-dark" data-toggle="modal" data-target="#modal_add_client" data-target-select="#appearer">
+                        <i class="fas fa-plus" style="font-size: 11px;"></i> Cliente / compareciente
+                    </button>
                     <div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
