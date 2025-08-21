@@ -32,6 +32,21 @@ class InstrumentAct extends Model
         'in_favor_of',
     ];
 
+    protected $appends = ['invoice_print'];
+
+    public function getInvoicePrintAttribute()
+    {
+        if ($this->invoice == "not_applicable") {
+            return "No aplica";
+        } else if ($this->invoice == "request") {
+            return "Solicitar";
+        } else if ($this->invoice == "sent") {
+            return "Enviada";
+        } else {
+            return "";
+        }
+    }
+
     /**
      * Obtiene el nombre del acto y cliente asociado al acto.
      */
@@ -66,93 +81,9 @@ class InstrumentAct extends Model
      }
 
      public function instrument()
-{
-    return $this->belongsTo(Instrument::class, 'instrument_id');
-}
-
-    public function getDataTable(Request $request,$instrument_id)
     {
-
-
-        
-
-        $columns = array(
-            0 => 'id',
-            1 => 'created_at_f',
-            2 => 'act',
-            3 => 'client',
-            4 => 'legal_representative',
-            5 => 'cost',
-            6 => 'invoice_text'
-        );
-
-        $totalData = InstrumentAct::where('instrument_id',$instrument_id)->count();
-        $totalFiltered = $totalData;
-
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        $dir = ($dir == 'desc') ? true : false;
-
-
-        $items = [];
-        if (empty($request->input('search.value'))) {
-
-            if ($limit == -1) {
-                $items = InstrumentAct::where('instrument_id',$instrument_id)->get(['*'])->map(function ($item) {
-                        return $this->mapDataTable($item);
-                    })->sortBy($order, SORT_NATURAL | SORT_FLAG_CASE, $dir)->values()->all();
-            } else {
-                $items = InstrumentAct::where('instrument_id',$instrument_id)->get(['*'])->map(function ($item) {
-                        return $this->mapDataTable($item);
-                    })
-                    ->sortBy($order, SORT_NATURAL | SORT_FLAG_CASE, $dir)
-                    ->skip($start)->take($limit)
-                    ->values()->all();
-            }
-        } else {
-            $search = $request->input('search.value');
-            if ($limit == -1) {
-                $items =  InstrumentAct::where('instrument_id',$instrument_id)->get(['*'])->map(function ($item) {
-                        return $this->mapDataTable($item);
-                    })
-                    ->filter(function ($item) use ($search, $columns, $request) {
-                        return $this->filterSearch($item, $search, $columns, $request);
-                    })
-                    ->sortBy($order, SORT_NATURAL | SORT_FLAG_CASE, $dir)->values()->all();
-            } else {
-
-                $items =  InstrumentAct::where('instrument_id',$instrument_id)->get(['*'])->map(function ($item) {
-                        return $this->mapDataTable($item);
-                    })
-                    ->filter(function ($item) use ($search, $columns, $request) {
-                        return $this->filterSearch($item, $search, $columns, $request);
-                    })
-                    ->sortBy($order, SORT_NATURAL | SORT_FLAG_CASE, $dir)
-                    ->skip($start)->take($limit)
-                    ->values()->all();
-            }
-
-            $totalFiltered = InstrumentAct::where('instrument_id',$instrument_id)->get(['*'])->map(function ($item) {
-                return $this->mapDataTable($item);
-            })->filter(function ($item) use ($search, $columns, $request) {
-                    return $this->filterSearch($item, $search, $columns, $request);
-                })
-                ->count();
-        }
-
-        $result = [
-            'iTotalRecords'        =>  $totalData,
-            'iTotalDisplayRecords' => $totalFiltered,
-            'aaData'               =>  $items
-        ];
-
-        return $result;
+        return $this->belongsTo(Instrument::class, 'instrument_id');
     }
-
-
-
 
     public function getDataTableIndex(Request $request)
     {
@@ -293,46 +224,6 @@ class InstrumentAct extends Model
 
         $item["act_title"]="<p style='color:".$color."';>".$item->act."</p>";
         $item["act_title_simple"]=$item->act;
-    
-        return   $item;
-    }
-
-    function mapDataTable($item)
-    {
-
-        $act = Act::find($item['act_id']); 
-  
-           $item["act"]=$act->act;
-           $client = Client::find($item['client_id']); 
-           $item["person_type"]=$client["person_type"];
-           if( $client['person_type']=="moral"){
-            $denomination = Denomination::find($client['denomination_id']); 
-            if( $denomination){
-               $item["client"]=$client["name"]." ".$denomination->acronym;
-            }
-        
-           }else if( $client['person_type']=="física"){
-            $item["client"]=$client["name"]." ".$client["last_name"]." ".$client["second_last_name"];
-           }else{
-               $item["client"]="";
-           }
-
-
-           if($item->invoice=="not_applicable"){
-            $item["invoice_text"]="No aplica";
-           }else if($item->invoice=="request"){
-            $item["invoice_text"]="Solicitar";
-
-           }else if($item->invoice=="sent"){
-            $item["invoice_text"]="Enviada";
-
-           }else{
-            $item["invoice_text"]="";
-
-           }
-
-           $item["created_at_f"]=$item->created_at ? $item->created_at->format('Y-m-d') : null;
-
     
         return   $item;
     }

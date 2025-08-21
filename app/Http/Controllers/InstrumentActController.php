@@ -135,13 +135,6 @@ class InstrumentActController extends Controller
         return back()->with('success', 'Elemento eliminado correctamente.');
     }
 
-    public function dataTable(Request $request)
-    {
-        $item = new InstrumentAct();
-        $items = $item->getDataTable($request,$request->input('instrument_id'));
-        return response()->json($items);
-    }
-
     public function dataTableIndex(Request $request)
     {
         $item = new InstrumentAct();

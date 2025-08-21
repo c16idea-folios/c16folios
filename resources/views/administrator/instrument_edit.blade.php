@@ -173,18 +173,40 @@
                     <table class="table-bordered table-hover table-data-custom" id="kt_table_acts">
                         <thead>
                             <tr>
-                                <th class="clean-icon-table">
-
-                                </th>
+                                <th class="clean-icon-table"></th>
                                 <th>Fecha del acto</th>
                                 <th>Acto</th>
                                 <th>Cliente</th>
                                 <th>Representante legal</th>
                                 <th>Costo del trámite</th>
                                 <th>Factura</th>
-
                             </tr>
                         </thead>
+                        <tbody>
+                            @foreach($instrument->instrumentActs as $insAct)
+                                <tr data-act-id="{{ $insAct->act->id }}"
+                                    data-client-id="{{ $insAct->client_id }}"
+                                    data-person-type="{{ $insAct->client->person_type ?? '' }}"
+                                    data-legal-representative="{{ $insAct->legal_representative }}"
+                                    data-act="{{ $insAct->act->act ?? '' }}"
+                                    data-cost="{{ $insAct->cost }}"
+                                    data-invoice="{{ $insAct->invoice }}"
+                                    data-created-at="{{ $insAct->created_at }}"
+                                >
+                                    <td class="dt-body-center" style="width: 20px">
+                                        <div class="pencil-edit">
+                                            <i class="icon-2x text-dark-50 flaticon-edit"></i>
+                                        </div>
+                                    </td>
+                                    <td>{{ $insAct->created_at ? $insAct->created_at->format('Y-m-d') : '' }}</td>
+                                    <td>{{ $insAct->act->act ?? '' }}</td>
+                                    <td>{{ $insAct->client->name ?? '' }}</td>
+                                    <td>{{ $insAct->legal_representative }}</td>
+                                    <td data-order="{{ $insAct->cost }}">{{ '$' . $insAct->cost }}</td>
+                                    <td>{{ $insAct->invoice_print }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
 
                     <!--end: Datatable -->
@@ -238,7 +260,9 @@
                             data-legal-representative="{{ $appearer->legal_representative }}"
                             data-legend="{{ $appearer->legend }}"
                             data-observations="{{ $appearer->observations }}">
-                            <td><div class="pencil-edit"><i class="icon-2x text-dark-50 flaticon-edit"></i></div></td>
+                            <td class="dt-body-center" style="width: 20px">
+                                <div class="pencil-edit"><i class="icon-2x text-dark-50 flaticon-edit"></i></div>
+                            </td>
                             <td>{{ $appearer->instrumentAct->act->act }}</td>
                             <td>{{ $appearer->instrumentAct->client->name }}</td>
                             <td>{{ $appearer->appearerClient->name }}</td>

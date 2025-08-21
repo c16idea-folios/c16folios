@@ -1,85 +1,28 @@
 "use strict";
-var tableMain = null;
+
 var KTDatatables = function() {
     var initTable = function() {
-        // begin first table
-        tableMain = $('#kt_table_acts').DataTable({
-            lengthMenu: [
-                [10, 25, 50, 100, -1],
-                [10, 25, 50, 100, "All"]
-            ],
-            dom: 't',
-            autoWidth: true,
-            pageLength: 25,
-            responsive: true,
-            colReorder: true,
-            /* scrollY: false,
-			scrollX: true,*/
-            searchDelay: 500,
-            processing: true,
-            serverSide: true,
-            serverMethod: 'post',
-            language: {
-                processing: `Procesando el contenido <br><br> <button class="btn btn-success btn-icon btn-circle kt-spinner kt-spinner--center kt-spinner--sm kt-spinner--light"></button>`,
-                searchPlaceholder: "",
-                search: "Buscar",
-                lengthMenu: "Mostrar _MENU_  por página",
-                zeroRecords: "No se encontró nada",
-                info: "Página _PAGE_ de _PAGES_  (filtrado de _MAX_ registros totales)",
-                infoEmpty: "No hay registros para mostrar.",
-                infoFiltered: ""
-            },
-            ajax: {
-                url: "/admin/instrument_act/dataTable",
-                dataType: "json",
-                type: "POST",
-                data:function(data) {
-                  data.instrument_id= $('#instrument_id').val();
-                  data._token = $('#token_ajax').val();
-              }
-            },
 
-
-            columns: [
-                 {data: 'id',responsivePriority: 1,  width: "20px", },
-                { data: 'created_at_f'},
-                { data: 'act'},
-                { data: 'client'},
-                { data: 'legal_representative'},
-                { data: 'cost'},
-                { data: 'invoice_text'},
-
-            ],
-            columnDefs: [
-
-                {
-                    'targets': 0,
-                    'type': "alt-string",
-                    'searchable': false,
-                    'orderable': false,
-                    'className': 'dt-body-center',
-                    'render': function(data, type, full, meta) {
-
-                        return `<div  onclick='editElementActs(${JSON.stringify(full)})' class="pencil-edit"><i class="icon-2x text-dark-50 flaticon-edit"></i></div>`;
-                    }
-                },
-                {
-                  'targets': 5,
-
-                  'render': function(data, type, full, meta) {
-
-                      return "$"+data;
-                  }
-              }
-            ],
-            drawCallback: function(settings) {
-                    $('#kt_table_acts').show();
-            },
-            order: [
-                [0, 'desc']
-            ]
-
-        });
+    // tabla de actos
+    $('#kt_table_acts').DataTable({
+      dom: 't',
+      paging: false,
+      autoWidth: true,
+      responsive: true,
+      colReorder: true,
+      language: {
+        zeroRecords: "No se encontró nada",
+        infoFiltered: ""
+      },
+      order: [
+        [1, 'desc']
+      ],
+      columnDefs: [{
+        'targets': 0,
+        'searchable': false,
+        'orderable': false,
+      }]
+    });
 
 
         // Tabla comparecientes
@@ -91,7 +34,7 @@ var KTDatatables = function() {
             dom: 't',
             paging: false,
             autoWidth: true,
-            scrollX: true,
+            responsive: true,
             colReorder: true,
             language: {
                 zeroRecords: "No se encontró nada",
@@ -255,10 +198,27 @@ jQuery(document).ready(function() {
 
         });
 
-        // Editar compareciente
-        $('#kt_table_appearer tbody').on('click', '.pencil-edit', function() {
-            editElementAppearer(this);
-        });
+    // Editar acto
+    $('#kt_table_acts tbody').on('click', '.pencil-edit', function() {
+      var tr = $(this).closest('tr');
+      var data = {
+        id: tr.data('act-id'),
+        created_at_f: tr.find('td').eq(1).text(),
+        act: tr.data('act'),
+        client_id: tr.data('client-id'),
+        person_type: tr.data('person-type'),
+        legal_representative: tr.data('legal-representative'),
+        act_id: tr.data('act-id'),
+        cost: tr.data('cost'),
+        invoice: tr.data('invoice')
+      };
+      editElementActs(data);
+    });
+
+    // Editar compareciente
+    $('#kt_table_appearer tbody').on('click', '.pencil-edit', function() {
+      editElementAppearer(this);
+    });
 
 });
 
@@ -489,7 +449,7 @@ function editElementActs(data){
     $("#created_at_act_e").val(data.created_at_f);
     $("#client_e").val(`${data.client_id}|${data.person_type}`);
 
-    console.log("client:",`${data.client_id}|${data.person_type}`);
+    // console.log("client:",`${data.client_id}|${data.person_type}`);
     $("#legal_representative_e").val(data.legal_representative);
     $("#act_id_e").val(data.act_id);
     $("#cost_e").val(data.cost);

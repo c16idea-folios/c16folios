@@ -236,10 +236,6 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::delete('/instrument_act', [InstrumentActController::class, 'destroy'])
             ->name('instrument_act.admin.delete');
 
-        Route::post('/instrument_act/dataTable', [InstrumentActController::class, 'dataTable'])
-            ->name('instrument_act.admin.datatable');
-
-
         //
         Route::post('/appearer', [AppearerController::class, 'store'])
             ->name('appearer.admin.store');
