@@ -82,72 +82,30 @@ var KTDatatables = function() {
         });
 
 
-                // begin first table
-              var  tableAppearer = $('#kt_table_appearer').DataTable({
-                  lengthMenu: [
-                      [10, 25, 50, 100, -1],
-                      [10, 25, 50, 100, "All"]
-                  ],
-                  dom: 't',
-                  autoWidth: true,
-                  pageLength: 25,
-                  responsive: true,
-                  colReorder: true,
-                  /* scrollY: false,
-            scrollX: true,*/
-                  searchDelay: 500,
-                  processing: true,
-                  serverSide: true,
-                  serverMethod: 'post',
-                  language: {
-                      processing: `Procesando el contenido <br><br> <button class="btn btn-success btn-icon btn-circle kt-spinner kt-spinner--center kt-spinner--sm kt-spinner--light"></button>`,
-                      searchPlaceholder: "",
-                      search: "Buscar",
-                      lengthMenu: "Mostrar _MENU_  por página",
-                      zeroRecords: "No se encontró nada",
-                      info: "Página _PAGE_ de _PAGES_  (filtrado de _MAX_ registros totales)",
-                      infoEmpty: "No hay registros para mostrar.",
-                      infoFiltered: ""
-                  },
-                  ajax: {
-                      url: "/admin/appearer/dataTable",
-                      dataType: "json",
-                      type: "POST",
-                      data: { _token: $('#token_ajax').val() }
-                  },
-                  columns: [
-                       {data: 'id',responsivePriority: 1,  width: "20px", },
-                      { data: 'act'},
-                      { data: 'client'},
-                      { data: 'appearer'},
-                      { data: 'legal_representative'},
-                      { data: 'observations'}
-
-                  ],
-                  columnDefs: [
-
-                      {
-                          'targets': 0,
-                          'type': "alt-string",
-                          'searchable': false,
-                          'orderable': false,
-                          'className': 'dt-body-center',
-                          'render': function(data, type, full, meta) {
-
-                              return `<div  onclick='editElementAppearer(${JSON.stringify(full)})' class="pencil-edit"><i class="icon-2x text-dark-50 flaticon-edit"></i></div>`;
-                          }
-                      }
-                  ],
-                  drawCallback: function(settings) {
-                          $('#kt_table_appearer').show();
-                  },
-                  order: [
-                      [0, 'desc']
-                  ]
-
-              });
-
-
+        // Tabla comparecientes
+        $('#kt_table_appearer').DataTable({
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, "All"]
+            ],
+            dom: 't',
+            paging: false,
+            autoWidth: true,
+            scrollX: true,
+            colReorder: true,
+            language: {
+                zeroRecords: "No se encontró nada",
+                infoFiltered: ""
+            },
+            order: [
+                [1, 'desc']
+            ],
+            columnDefs: [{
+                'targets': 0,
+                'searchable': false,
+                'orderable': false,
+            }, ]
+        });
 
     };
 
@@ -275,7 +233,6 @@ jQuery(document).ready(function() {
         });
 
         $('#appearer_e').change(function() {
-
           var selectedValue = $(this).val(); // Obtén el valor del select
 
           // Dividir el valor en id y person_type
@@ -296,6 +253,11 @@ jQuery(document).ready(function() {
           // Actualizar el campo de texto con el valor del representante legal
           $('#legal_representative_appearer_e').val(legalRepresentative);
 
+        });
+
+        // Editar compareciente
+        $('#kt_table_appearer tbody').on('click', '.pencil-edit', function() {
+            editElementAppearer(this);
         });
 
 });
@@ -553,33 +515,15 @@ $('#modal_edit_act').modal('show');
 
     }
 
-
-
-    function editElementAppearer(data){
-
-    $("#instrument_act_e").val(data.instrument_act_id);
-    $("#appearer_e").val(`${data.appearer_id}|${data.appearer_person_type}`);
-    $("#legal_representative_appearer_e").val(data.legal_representative);
-    $("#legend_e").val(data.legend);
-    $("#cost_e").val(data.cost);
-    $("#observations_e").val(data.observations);
-
-    $("#id_edit_appearer").val(data.id);
-
-
-    var selectedValue =`${data.appearer}|${data.appearer_person_type}`; // Obtén el valor del select
-      // Dividir el valor en id y person_type
-      var parts = selectedValue.split('|');
-      var id = parts[0]; // El ID
-      var person_type = parts[1]; // El tipo de persona
-      if(person_type=="moral"){
-          $('#legal_representative_container_appearer_e').show().find('select').prop('disabled', false);
-      }else{
-          $('#legal_representative_container_appearer_e').hide().find('select').prop('disabled', true);
-      }
-
-
+function editElementAppearer(button) {
+    var tr = $(button).closest('tr');
+    $("#instrument_act_e").val(tr.data('instrument-act-id'));
+    $("#appearer_e").val(tr.data('appearer-id-type')).trigger('change');
+    $("#legal_representative_appearer_e").val(tr.data('legal-representative'));
+    $("#legend_e").val(tr.data('legend'));
+    $("#observations_e").val(tr.data('observations'));
+    $("#id_edit_appearer").val(tr.data('appearer-id'));
 
     $('#modal_edit_appearer').modal('show');
+}
 
-    }

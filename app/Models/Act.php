@@ -10,6 +10,22 @@ class Act extends Model
     protected $table='acts';
     protected $guarded= ['id'];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['name'];
+
+    /**
+     * Get the act's name.
+     *
+     * @return string
+     */
+    public function getNameAttribute()
+    {
+        return $this->act;
+    }
 
     public function getDataTable(Request $request)
     {

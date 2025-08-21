@@ -31,8 +31,14 @@ class InstrumentAct extends Model
         'mercantile_declarations',
         'in_favor_of',
     ];
-    
 
+    /**
+     * Obtiene el nombre del acto y cliente asociado al acto.
+     */
+    public function getActAndClientAttribute()
+    {
+        return $this->act->name . ' - ' . $this->client->formatted_name;
+    }
 
      // Relación con el modelo Act
      public function act()
@@ -46,6 +52,9 @@ class InstrumentAct extends Model
          return $this->belongsTo(Client::class);
      }
 
+     /**
+      * Comparecientes al acto
+      */
      public function appearers()
      {
          return $this->hasMany(Appearer::class);

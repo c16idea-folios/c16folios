@@ -15,8 +15,19 @@ class Appearer extends Model
         return $this->belongsTo(InstrumentAct::class);
     }
 
+
+    public function appearerClient(){
+        return $this->belongsTo(Client::class, 'appearer');
+    }
+
+    /**
+     * @deprecated
+     * Obtener data para datatables
+     * La lógica utilizada es incorrecta
+     */
     public function getDataTable(Request $request)
     {
+        // TODO: remover
 
 
         $columns = array(
@@ -93,20 +104,26 @@ class Appearer extends Model
         return $result;
     }
 
+    /**
+     * Mapeo de datos para datatables
+     * Lógica errada
+     * @deprecated
+     */
     function mapDataTable($item)
     {
+        // TODO: remover
 
-        $instrumentAct = InstrumentAct::find($item->instrument_act_id); 
-        $act = Act::find($instrumentAct->act_id); 
-        $client = Client::find($instrumentAct->client_id); 
-        $appearer = Client::find($item->appearer); 
+        $instrumentAct = InstrumentAct::find($item->instrument_act_id);
+        $act = Act::find($instrumentAct->act_id);
+        $client = Client::find($instrumentAct->client_id);
+        $appearer = Client::find($item->appearer);
 
         $item["act"]=$act->act;
 
            if( $client['person_type']=="moral"){
-          
+
                $item["client"]=$client["name"];
-        
+
            }else if( $client['person_type']=="física"){
             $item["client"]=$client["name"]." ".$client["last_name"]." ".$client["second_last_name"];
            }else{
@@ -115,9 +132,9 @@ class Appearer extends Model
 
 
            if( $appearer['person_type']=="moral"){
-          
+
             $item["appearer"]=$appearer["name"];
-     
+
         }else if( $appearer['person_type']=="física"){
          $item["appearer"]=$appearer["name"]." ".$appearer["last_name"]." ".$appearer["second_last_name"];
         }else{
@@ -127,10 +144,10 @@ class Appearer extends Model
         $item["appearer_person_type"]=$appearer['person_type'];
 
 
-        
 
 
-      
+
+
 
         return   $item;
     }

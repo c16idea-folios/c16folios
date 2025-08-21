@@ -21,10 +21,16 @@ class Instrument extends Model
           return $this->belongsTo(User::class, 'responsible_id');
       }
 
-public function acts()
-{
-    return $this->hasMany(InstrumentAct::class, 'instrument_id');
-}
+    /**
+     * Relación con el modelo InstrumentAct, se mantiene por compatibilidad
+     * acts() es ambiguo, pues parece hacer referencia al modelo Act, cuando realmente hace
+     * referencia al modelo InstrumentAct
+     * @deprecated
+     */
+    public function acts()
+    {
+        return $this->hasMany(InstrumentAct::class, 'instrument_id');
+    }
 
 public function getDataTable(Request $request, $status = "active")
 {
@@ -133,7 +139,7 @@ public function getDataTable(Request $request, $status = "active")
 
 
 
-        
+
         $dir =true;
         $items = Instrument::get(['*'])->map(function ($item) {
             return $this->mapDataTable($item);
@@ -147,19 +153,19 @@ public function getDataTable(Request $request, $status = "active")
         $item["payments"] = $item->id;
         $item["notices"] = $item->id;
         $item["delivered"] = $item->id;
-    
+
         $item["created_at_f"] = $item->created_at ? $item->created_at->format('Y-m-d') : null;
         $color = "#000000";
         $user = User::where('id', $item->responsible_id)->first();
-    
+
         if ($user && $user->work_team_id != null) {
             $work_team = WorkTeam::where('id', $user->work_team_id)->first();
             $color = $work_team->identifier;
         }
-    
+
         // Cargar instrumentActs con las relaciones de 'act' y 'client' en una sola consulta
         $instrument = Instrument::with(['instrumentActs.act', 'instrumentActs.client'])->findOrFail($item->id);
-    
+
         // Generar el HTML para las listas desordenadas de 'acts' y 'clients'
         $htmlActs = '<ul style="color: ' . $color . ';">';
         $htmlClients = '<ul>';
@@ -182,7 +188,7 @@ public function getDataTable(Request $request, $status = "active")
 
                 }
             }
-    
+
             // Generar HTML para los 'clients'
             $client = $instrumentAct->client;
             $isForeigner = false;
@@ -201,7 +207,7 @@ public function getDataTable(Request $request, $status = "active")
                         $clientName = $client["name"] . " " . $denomination->acronym;
                     }
 
-                  
+
 
                     array_push($acts_list,["text"=> strtoupper($client["name"])." (".$instrumentAct->act->act.")", "id"=> $instrumentAct->id,"is_foreigner"=> $isForeigner, "show_in_notification"=>(($instrumentAct->act->act=="Constitución")?true:false)] );
                 } else if ($client['person_type'] == "física") {
@@ -210,7 +216,7 @@ public function getDataTable(Request $request, $status = "active")
                 } else {
                     $clientName = "";
                 }
-    
+
                 $htmlClients .= '<li>' . strtoupper(htmlspecialchars($clientName)) . '</li>';
                 $item["clients_formated"].=$clientName.", ";
             }
@@ -218,55 +224,55 @@ public function getDataTable(Request $request, $status = "active")
 
             if($instrumentAct->invoice=="request"){
                 $item["cost_vat"] = round($instrumentAct->cost * 1.16, 2);
-             
-        
+
+
             } else if($instrumentAct->invoice=="sent"){
                 $item["cost_vat"] = round($instrumentAct->cost * 1.16, 2);
-           
+
             } else {
                 $item["cost_vat"] = $instrumentAct->cost;
-            
+
             }
 
             $total+= $item["cost_vat"];
             $payments=Payment::where('instrument_act_id',$instrumentAct->id)->get(["*"]);
             if(count($payments)>0){
-              
+
 
                 foreach ($payments as $key => $pay) {
                     $totalPaid+=$pay->amount_paid;
                 }
             }
-          
 
-           
+
+
         }
-   
-    
+
+
         $htmlActs .= '</ul>';
         $htmlClients .= '</ul>';
-        
+
         $item["acts_list"]=$acts_list;
         // Asignar los HTML generados al item
         $item["acts"] = $htmlActs;
         $item["clients"] = $htmlClients;
 
-    
+
         // Agregar información adicional
- 
+
         $item["total"]=round($total, 2) ;
 
         $item["total_formated"]=$this->formatCurrency(round($total, 2) );
 
         $item["paid"]=round($totalPaid, 2) ;
         $item["pending"]=round($total -  $totalPaid, 2) ;
-    
+
         $item["responsible"] =($user)? $user->name . ' ' . $user->last_name . ' ' . $user->second_last_name:"";
         $item["delivered_status"] =(($item->submission_date!="" && $item->submission_date!=null)? "Entregado":"Sin entregar");
 
         return $item;
     }
-    
+
 
     function filterSearch($obj, $search, $columns, $request)
     {
@@ -289,6 +295,6 @@ public function getDataTable(Request $request, $status = "active")
         return number_format($amount, 2, '.', ',');
     }
 
-  
+
 
 }

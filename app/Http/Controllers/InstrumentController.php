@@ -129,65 +129,53 @@ class InstrumentController extends Controller
     {
         $users = [];
 
-
-        // Buscar el instrumento por su ID, ejemplo:
-        $instrument = Instrument::findOrFail($id);
+        // Buscar el instrumento, con las relaciones requeridas
+        $instrument = Instrument::with([
+            // 'responsible',
+            'instrumentActs.act',
+            'instrumentActs.client.denomination',
+            'instrumentActs.appearers.appearerClient',
+        ])->findOrFail($id);
         $instrument["created_at_f"] = $instrument->created_at ? $instrument->created_at->format('Y-m-d') : null;
 
-        // Obtener todos los clientes junto con su denominación (usando una relación)
+        // Obtener todos los clientes junto con su denominación
         $clients = Client::with('denomination')->get();
-        $acts = Act::get(["*"]);
+        $acts = Act::get(); // todos los tipos de acto
 
-        $user = User::where('id', $instrument->responsible_id)->first();
+        // Usuario responsable
+        // TODO: revisar esta lógica de asignación
+                $user = User::where('id', $instrument->responsible_id)->first();
 
-        if (  $user && ((int) $user->id === (int) auth()->user()->id)) {
-            array_push($users, auth()->user());
-        } else {
+                if (  $user && ((int) $user->id === (int) auth()->user()->id)) {
+                    array_push($users, auth()->user());
+                } else {
+                    if($user){
+                        array_push($users, $user);
 
-            if($user){
-                array_push($users, $user);
-
-            }
-
-            array_push($users, auth()->user());
-        }
-
-
-        $acts_table = InstrumentAct::where("instrument_id", $id)->get(["*"]);
-
-        $instrument_acts = InstrumentAct::with(['act', 'client.denomination'])
-            ->get()
-            ->map(function ($item) {
-                $actName = $item->act ? $item->act->act : '';
-
-                $clientName = '';
-                if ($item->client) {
-                    if ($item->client->person_type == 'moral') {
-                        $denomination = $item->client->denomination;
-                        if ($denomination) {
-                            $clientName = $item->client->name . ' ' . $denomination->acronym;
-                        }
-                    } elseif ($item->client->person_type == 'física') {
-                        $clientName = $item->client->name . ' ' . $item->client->last_name . ' ' . $item->client->second_last_name;
                     }
+                    array_push($users, auth()->user());
                 }
+        // FIN - usuario responsable
 
-                $item["act_client_name"] = trim($actName . ' ' . $clientName);
-                return $item;
+        // obtener comparecientes asociados a los instrument acts, incluir el acto asociado
+        $appearers = $instrument->instrumentActs->flatMap(function ($instrumentAct) {
+            return $instrumentAct->appearers->map(function ($appearer) use ($instrumentAct) {
+                $appearer->instrumentAct = $instrumentAct;
+                return $appearer;
             });
-
-
-        // Obtén los IDs de los instrument_act relacionados con el instrument_id dado
-        $instrumentActIds = InstrumentAct::where('instrument_id', $id)->pluck('id');
-
-        // Obtén los appearers relacionados con los instrument_act_ids obtenidos
-        $appearers = Appearer::whereIn('instrument_act_id', $instrumentActIds)->get();
+        });
 
         // Obtener las denominaciones, para modal crear cliente
         $denominations = Denomination::orderBy('order', 'asc')->get();
 
-
-        return view('administrator.instrument_edit', compact('instrument', 'users', 'clients', 'acts', 'acts_table', 'instrument_acts', 'appearers', 'denominations'));
+        return view('administrator.instrument_edit', compact([
+            'instrument',
+            'users',
+            'clients',
+            'acts',
+            'appearers',
+            'denominations'
+        ]));
     }
 
 

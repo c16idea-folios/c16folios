@@ -164,30 +164,30 @@
 
                 </div>
                 <div class="part2-instrument-edit">
-                    @if(count($acts_table)<=0)
+                @if($instrument->instrumentActs->count() == 0)
                         <div class="part3-instrument-edit">
                         <p>No se ha agregado "Actos" al instrumento.</p>
-                </div>
+                        </div>
                 @else
-                <!--begin: Datatable -->
-                <table class="table-bordered table-hover table-data-custom" id="kt_table_acts">
-                    <thead>
-                        <tr>
-                            <th class="clean-icon-table">
+                    <!--begin: Datatable -->
+                    <table class="table-bordered table-hover table-data-custom" id="kt_table_acts">
+                        <thead>
+                            <tr>
+                                <th class="clean-icon-table">
 
-                            </th>
-                            <th>Fecha del acto</th>
-                            <th>Acto</th>
-                            <th>Cliente</th>
-                            <th>Representante legal</th>
-                            <th>Costo del trámite</th>
-                            <th>Factura</th>
+                                </th>
+                                <th>Fecha del acto</th>
+                                <th>Acto</th>
+                                <th>Cliente</th>
+                                <th>Representante legal</th>
+                                <th>Costo del trámite</th>
+                                <th>Factura</th>
 
-                        </tr>
-                    </thead>
-                </table>
+                            </tr>
+                        </thead>
+                    </table>
 
-                <!--end: Datatable -->
+                    <!--end: Datatable -->
                 @endif
 
 
@@ -197,7 +197,7 @@
         </div>
 
 
-        @if(count($acts_table)>0)
+        @if($instrument->instrumentActs->count() > 0)
         <div class="row">
 
             <div class="part1-instrument-edit d-flex justify-content-end align-items-center">
@@ -209,10 +209,10 @@
 
             </div>
             <div class="part2-instrument-edit">
-                @if(count($appearers)<=0)
-                    <div class="part3-instrument-edit">
+            @if(count($appearers)<=0)
+                <div class="part3-instrument-edit">
                     <p>No se han asociado "Comparecientes" a los "Actos" del instrumento.</p>
-            </div>
+                </div>
 
             @else
             <!--begin: Datatable -->
@@ -230,6 +230,23 @@
 
                     </tr>
                 </thead>
+                <tbody>               
+                    @foreach($appearers as $appearer)
+                        <tr data-appearer-id="{{ $appearer->id }}"
+                            data-instrument-act-id="{{ $appearer->instrument_act_id }}"
+                            data-appearer-id-type="{{ $appearer->appearer.'|'.$appearer->appearerClient->person_type }}"
+                            data-legal-representative="{{ $appearer->legal_representative }}"
+                            data-legend="{{ $appearer->legend }}"
+                            data-observations="{{ $appearer->observations }}">
+                            <td><div class="pencil-edit"><i class="icon-2x text-dark-50 flaticon-edit"></i></div></td>
+                            <td>{{ $appearer->instrumentAct->act->act }}</td>
+                            <td>{{ $appearer->instrumentAct->client->name }}</td>
+                            <td>{{ $appearer->appearerClient->name }}</td>
+                            <td>{{ $appearer->legal_representative }}</td>
+                            <td>{{ $appearer->observations }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
 
             <!--end: Datatable -->
@@ -546,8 +563,8 @@
                                 <label for="instrument_act" class="form-control-label">Acto asociado *</label>
                                 <select name="instrument_act_id" id="instrument_act" class="form-control" required>
                                     <option value="">Seleccione</option>
-                                    @foreach($instrument_acts as $act)
-                                    <option value="{{ $act->id }}">{{ $act["act_client_name"] }}</option>
+                                    @foreach($instrument->instrumentActs as $instrumentAct)
+                                    <option value="{{ $instrumentAct->id }}">{{ $instrumentAct->act_and_client }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -626,8 +643,8 @@
                                 <label for="instrument_act_e" class="form-control-label">Acto asociado *</label>
                                 <select name="instrument_act_id" id="instrument_act_e" class="form-control" required>
                                     <option value="">Seleccione</option>
-                                    @foreach($instrument_acts as $act)
-                                    <option value="{{ $act->id }}">{{ $act["act_client_name"] }}</option>
+                                    @foreach($instrument->instrumentActs as $instrumentAct)
+                                        <option value="{{ $instrumentAct->id }}">{{ $instrumentAct->act_and_client }}</option>
                                     @endforeach
                                 </select>
                             </div>
