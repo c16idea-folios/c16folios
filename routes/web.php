@@ -249,11 +249,6 @@ Route::middleware(['auth', 'active'])->group(function () {
             ->name('appearer.admin.delete');
 
 
-        Route::post('/appearer/dataTable', [AppearerController::class, 'dataTable'])
-            ->name('appearer.admin.datatable');
-
-
-
         Route::put('/appearer', [AppearerController::class, 'update'])
             ->name('appearer.admin.update');
         //

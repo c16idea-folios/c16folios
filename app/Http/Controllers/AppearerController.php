@@ -67,11 +67,4 @@ class AppearerController extends Controller
         return back()->with('success', 'Elemento eliminado correctamente.');
     }
 
-    public function dataTable(Request $request)
-    {
-        $item = new Appearer();
-        $items = $item->getDataTable($request);
-        return response()->json($items);
-    }
-
 }
