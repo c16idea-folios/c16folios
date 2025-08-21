@@ -339,11 +339,14 @@ class InstrumentController extends Controller
         }
 
         // Obtener los datos
-        $instrumentActs = Instrument::whereBetween('no', [$min, $max])
-            ->with('acts')
-            ->get()
-            ->pluck('acts')
-            ->flatten();
+        $instrumentActs = InstrumentAct::whereHas('instrument', function ($query) use ($min, $max) {
+            $query->whereBetween('no', [$min, $max]);
+        })
+        ->with('act', 'instrument', 'client')
+        ->get()
+        ->sortBy(function($act) {
+            return $act->instrument->no;
+        })->values();
 
         $extracts = [];
         foreach ($instrumentActs as $instrumentAct) {

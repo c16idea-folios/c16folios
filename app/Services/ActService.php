@@ -58,9 +58,9 @@ class ActService
     public static function getFormatExtract($instrument_act)
     {
 
-        $act = Act::where('id', $instrument_act->act_id)->first();
-        $intrument = Instrument::where('id', $instrument_act->instrument_id)->first();
-        $client = Client::where('id', $instrument_act->client_id)->first();
+        $act = $instrument_act->act;
+        $intrument = $instrument_act->instrument;
+        $client = $instrument_act->client;
 
         $numero_poliza = self::numeroALetras( $intrument->no);
         $fecha_creacion = $intrument->created_at;
@@ -253,7 +253,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
     SE HIZO CONSTAR LA FORMALIZACIÓN DEL ACTA DE ASAMBLEA " . self::validarDato($tipo_formalizacion) . " DE \"" . self::validarDato($nombre_cliente) . "\"
     " . self::validarDato($tipo_sociedad) . ", DE FECHA " . self::validarDato($fecha_asamblea) . ", A SOLICITUD DE " . self::validarDato($nombres_solicitantes) . " COMO " . self::validarDato($cargo_solicitante) . ".";
     }
@@ -273,8 +273,8 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
-    SE HIZO CONSTAR LA CONSTITUCIÓN DE \"" . self::validarDato($nombre_empresa) . "\", " . self::validarDato($tipo_sociedad) . ", QUE OTORGAN 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
+    SE HIZO CONSTAR LA CONSTITUCIÓN DE \"" . self::validarDato($nombre_empresa) . "\", " . self::validarDato($tipo_sociedad) . ", QUE OTORGAN
     LOS SEÑORES " . self::validarDato($nombres_otorgantes) . ".";
     }
 
@@ -290,7 +290,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) .  ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) .  ",
     SE HIZO CONSTAR EL ACTO DE COTEJO SOLICITADO POR " . self::validarDato($nombre_solicitante) . ".";
     }
 
@@ -309,8 +309,8 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
-    SE HIZO CONSTAR LA NOTIFICACIÓN REALIZADA A " . self::validarDato($nombre_notificado) . " RESPECTO A " . self::validarDato($detalle_notificacion) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
+    SE HIZO CONSTAR LA NOTIFICACIÓN REALIZADA A " . self::validarDato($nombre_notificado) . " RESPECTO A " . self::validarDato($detalle_notificacion) . ",
     A SOLICITUD DE " . self::validarDato($nombres_solicitantes) . ".";
     }
 
@@ -328,8 +328,8 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha). ", 
-    SE HIZO CONSTAR LA RATIFICACIÓN DE FIRMAS " . self::validarDato($documento_ratificado) . " QUE OTORGAN 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha). ",
+    SE HIZO CONSTAR LA RATIFICACIÓN DE FIRMAS " . self::validarDato($documento_ratificado) . " QUE OTORGAN
     " . self::validarDato($nombres_solicitantes) . ".";
     }
 
@@ -347,7 +347,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha)  . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha)  . ",
     SE HIZO CONSTAR LA FE DE HECHOS RESPECTO A " . self::validarDato($detalle_hecho) . ", A SOLICITUD DE " . self::validarDato($nombre_solicitante) . " EN REPRESENTACIÓN DE " . self::validarDato($empresa) . ".";
     }
 
@@ -360,8 +360,8 @@ class ActService
     public static function generateDesignacion($type_instrument, $fecha_creacion, $numero_poliza, $nombre_empresa, $tipo_sociedad, $nombres_solicitantes)
     {
         $fecha = self::obtenerFecha($fecha_creacion);
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
-        SE HIZO CONSTAR LA DESIGNACIÓN DE FUNCIONARIO DE \"" . self::validarDato($nombre_empresa) . "\" " . self::validarDato($tipo_sociedad) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
+        SE HIZO CONSTAR LA DESIGNACIÓN DE FUNCIONARIO DE \"" . self::validarDato($nombre_empresa) . "\" " . self::validarDato($tipo_sociedad) . ",
         QUE OTORGA EL SEÑOR " . self::validarDato($nombres_solicitantes) . ", EN SU CARÁCTER DE ADMINISTRADOR ÚNICO DE LA SOCIEDAD.";
     }
 
@@ -374,8 +374,8 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
-        SE HIZO CONSTAR LA REVOCACIÓN DE FUNCIONARIO DE \"" . self::validarDato($nombre_empresa) . "\" " . self::validarDato($tipo_sociedad) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
+        SE HIZO CONSTAR LA REVOCACIÓN DE FUNCIONARIO DE \"" . self::validarDato($nombre_empresa) . "\" " . self::validarDato($tipo_sociedad) . ",
         QUE OTORGA EL SEÑOR " . self::validarDato($nombres_solicitantes) . ", EN SU CARÁCTER DE ADMINISTRADOR UNICO.";
     }
 
@@ -392,7 +392,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha). ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha). ",
         SE HIZO CONSTAR LA FORMALIZACIÓN DEL " . $tipo_contrato . " " . self::validarDato($de) . " CELEBRADO POR " . self::validarDato($nombres_solicitantes) . " ACTUANDO POR SU PROPIO DERECHO.";
     }
 
@@ -404,7 +404,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
         SE HIZO CONSTAR EL ACTO DE COMPULSA SOLICITADO POR " . self::validarDato($nombre_solicitante) . ".";
     }
 
@@ -416,7 +416,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_acta) . ", " . self::validarDato($fecha) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_acta) . ", " . self::validarDato($fecha) . ",
         SE HIZO CONSTAR EL ACTO DE CERTIFICADO DE DEPÓSITO DE ACCIONES SOLICITADO POR " . self::validarDato($nombre_solicitante) . ".";
     }
 
@@ -424,7 +424,7 @@ class ActService
     // Declaraciones Mercantiles
     /**
      * Genera el formato para Declaraciones Mercantiles
-     * 
+     *
      * @param string $numero_acta
      * @param int $dia
      * @param string $mes
@@ -438,14 +438,14 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_acta) . ", " . self::validarDato($fecha) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_acta) . ", " . self::validarDato($fecha) . ",
         SE HIZO CONSTAR LAS DECLARACIONES MERCANTILES RESPECTO " . self::validarDato($detalle_declaracion) . ", A SOLICITUD DE " . self::validarDato($nombre_solicitante) . ".";
     }
 
     // Comisión Mercantil
     /**
      * Genera el formato para Comisión Mercantil
-     * 
+     *
      * @param string $numero_poliza
      * @param int $dia
      * @param string $mes
@@ -460,8 +460,8 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ", 
-        SE HIZO CONSTAR EL \"MANDATO\" APLICADO A ACTOS DE COMERCIO CONOCIDO COMO COMISIÓN MERCANTIL, 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_poliza) . ", " . self::validarDato($fecha) . ",
+        SE HIZO CONSTAR EL \"MANDATO\" APLICADO A ACTOS DE COMERCIO CONOCIDO COMO COMISIÓN MERCANTIL,
         QUE OTORGAN EL/LOS SEÑOR(ES) " . self::validarDato($nombres_solicitantes) . ", A FAVOR DEL SEÑOR " . $in_favor_of . ".";
     }
 
@@ -470,7 +470,7 @@ class ActService
     {
         $fecha = self::obtenerFecha($fecha_creacion);
 
-        return $type_instrument . " NÚMERO " . self::validarDato($numero_acta) . ", " . self::validarDato($fecha) . ", 
+        return $type_instrument . " NÚMERO " . self::validarDato($numero_acta) . ", " . self::validarDato($fecha) . ",
         SE HIZO CONSTAR EL ACTO DE " . $act_title . " SOLICITADO POR " . self::validarDato($nombres_solicitantes) . ".";
     }
 }
