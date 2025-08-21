@@ -758,6 +758,9 @@
 <!-- end: Modal add client -->
 
 <input type="hidden" name="_token" id="token_ajax" value="{{ Session::token() }}">
+
+{{-- Acto principal, cuando sólo hay 1 --}}
+<input type="hidden" id="default_instrument_act_id" value="{{ $instrument->instrumentActs->count() === 1 ? $instrument->instrumentActs->first()->id : '' }}">
 <!-- end:: Content -->
 
 @endsection
@@ -892,6 +895,14 @@
             width: '100%',
             dropdownParent: $('#modal_add_appearer')
         });
+                
+        // Si hay un acto, seleccionarlo
+        const default_instrument_act_id = $('#default_instrument_act_id').val();
+        if (default_instrument_act_id) {
+            
+            console.log('selecciona', default_instrument_act_id)
+            $('#instrument_act').val(default_instrument_act_id).trigger('change');
+        }
     });
 
 
