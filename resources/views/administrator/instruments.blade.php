@@ -612,7 +612,7 @@
                             <th>Fecha de presentación</th>
                             <th>Tipo de aviso</th>
                             <th>Observaciones</th>
-                        
+
 
 
 
@@ -638,7 +638,7 @@
                         </select>
                     </div>
 
-                    
+
 
                     <div class="form-group" id="notice_type_container1">
                         <label for="notice_type" class="form-control-label">Tipo de aviso *</label>
@@ -693,7 +693,7 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" id="notification_id_e">
-                  
+
                     <div class="form-group">
                         <label for="no_instrument_notification_e" class="form-control-label">No. Instrumento*</label>
                         <input type="text" class="form-control" id="no_instrument_notification_e" required disabled>
@@ -907,7 +907,7 @@
                     </div>
 
 
-                    
+
 
                             <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -920,7 +920,7 @@
                     </div>
                 </form>
 
-           
+
 
         </div>
     </div>
@@ -1014,21 +1014,25 @@
 
     $("#amount_paid_e,#amount_paid").ForceNumericDotOnly();
     $("#start_extract,#end_extract").ForceNumericOnly();
-    
+
 
     $(document).ready(function() {
-        $('#payment_date,#payment_date_e,#presentation_date,#presentation_date_e,#submission_date,#created_at,#authorization_date').datepicker({
-            format: 'yyyy-mm-dd', // Formato de la fecha (puedes personalizarlo)
-            autoclose: true, // Cierra el selector al seleccionar una fecha
-            todayHighlight: false, // Resalta la fecha actual
-            clearBtn: true, // Muestra un botón para limpiar la fecha
-            language: 'es', // Cambia el idioma (opcional, si tienes los archivos de idioma cargados)
+        const config = {
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: false,
+            clearBtn: true,
+            language: 'es',
+        }
+
+        $('#payment_date,#payment_date_e,#presentation_date,#presentation_date_e,#submission_date,#authorization_date').datepicker(config);
+
+        $('#created_at').datepicker({
+            ...config,
+            clearBtn: false,
         });
 
         $('#payment_date,#presentation_date,#created_at').datepicker('setDate', new Date());
-
-
-
     });
 
     $(function() {

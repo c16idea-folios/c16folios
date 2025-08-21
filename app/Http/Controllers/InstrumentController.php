@@ -57,7 +57,7 @@ class InstrumentController extends Controller
             'responsible_id' => 'exists:users,id',
             'type' => 'required|in:Póliza,Acta',
             'authorization_date' => 'nullable|date',
-            'created_at' => 'nullable|date',
+            'created_at' => 'required|date',
         ]);
 
 
@@ -67,10 +67,9 @@ class InstrumentController extends Controller
 
 
 
-
         // Crear el usuario
         $instrument = Instrument::create($validated);
-        $instrument->created_at = $validated['created_at'] ?? now();
+        $instrument->created_at = $validated['created_at'];
         $instrument->save();
 
 
