@@ -184,21 +184,20 @@
                         </thead>
                         <tbody>
                             @foreach($instrument->instrumentActs as $insAct)
-                                <tr data-act-id="{{ $insAct->act->id }}"
-                                    data-client-id="{{ $insAct->client_id }}"
-                                    data-person-type="{{ $insAct->client->person_type ?? '' }}"
-                                    data-legal-representative="{{ $insAct->legal_representative }}"
+                                <tr
+                                    @foreach($insAct->getAttributes() as $key => $value)
+                                        data-{{ $key }}="{{ $value }}"
+                                    @endforeach
+                                    data-person_type="{{ $insAct->client->person_type ?? '' }}"
                                     data-act="{{ $insAct->act->act ?? '' }}"
-                                    data-cost="{{ $insAct->cost }}"
-                                    data-invoice="{{ $insAct->invoice }}"
-                                    data-created-at="{{ $insAct->created_at }}"
+                                    data-created_at_f="{{ $insAct->created_at_date }}"
                                 >
                                     <td class="dt-body-center" style="width: 20px">
                                         <div class="pencil-edit">
                                             <i class="icon-2x text-dark-50 flaticon-edit"></i>
                                         </div>
                                     </td>
-                                    <td>{{ $insAct->created_at ? $insAct->created_at->format('Y-m-d') : '' }}</td>
+                                    <td>{{ $insAct->created_at_date }}</td>
                                     <td>{{ $insAct->act->act ?? '' }}</td>
                                     <td>{{ $insAct->client->name ?? '' }}</td>
                                     <td>{{ $insAct->legal_representative }}</td>

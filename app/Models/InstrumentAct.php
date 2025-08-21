@@ -55,6 +55,15 @@ class InstrumentAct extends Model
         return $this->act->name . ' - ' . $this->client->formatted_name;
     }
 
+
+    /**
+     * Obtiene el la fecha en formato Y-m-d
+     */
+    public function getCreatedAtDateAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('Y-m-d') : null;
+    }
+
     // Relación con el modelo Act
     public function act()
     {

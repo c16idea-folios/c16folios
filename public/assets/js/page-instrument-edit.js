@@ -200,19 +200,11 @@ jQuery(document).ready(function() {
 
     // Editar acto
     $('#kt_table_acts tbody').on('click', '.pencil-edit', function() {
-      var tr = $(this).closest('tr');
-      var data = {
-        id: tr.data('act-id'),
-        created_at_f: tr.find('td').eq(1).text(),
-        act: tr.data('act'),
-        client_id: tr.data('client-id'),
-        person_type: tr.data('person-type'),
-        legal_representative: tr.data('legal-representative'),
-        act_id: tr.data('act-id'),
-        cost: tr.data('cost'),
-        invoice: tr.data('invoice')
-      };
-      editElementActs(data);
+        var tr = $(this).closest('tr');
+        var data = tr.data(); // Obtiene todos los atributos data-* como objeto
+        // Agregar manualmente los campos que no están en data-attributes
+
+        editElementActs(data);
     });
 
     // Editar compareciente
@@ -470,10 +462,10 @@ function editElementActs(data){
 
     generateInputsEdit( data.act);
 
-$("#id_edit_act").val(data.id);
-$('#modal_edit_act').modal('show');
+    $("#id_edit_act").val(data.id);
+    $('#modal_edit_act').modal('show');
 
-    }
+}
 
 function editElementAppearer(button) {
     var tr = $(button).closest('tr');
