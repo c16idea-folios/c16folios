@@ -141,20 +141,15 @@ class InstrumentController extends Controller
         $clients = Client::with('denomination')->get();
         $acts = Act::get(); // todos los tipos de acto
 
-        // Usuario responsable
-        // TODO: revisar esta lógica de asignación
-                $user = User::where('id', $instrument->responsible_id)->first();
-
-                if (  $user && ((int) $user->id === (int) auth()->user()->id)) {
-                    array_push($users, auth()->user());
-                } else {
-                    if($user){
-                        array_push($users, $user);
-
-                    }
-                    array_push($users, auth()->user());
-                }
-        // FIN - usuario responsable
+        // Usuario responsable (solo responsable y usuario actual)
+        $users = [];
+        $responsible = User::find($instrument->responsible_id);
+        if ($responsible) {
+            $users[] = $responsible;
+        }
+        if (!$responsible || $responsible->id !== auth()->id()) {
+            $users[] = auth()->user();
+        }
 
         // obtener comparecientes asociados a los instrument acts, incluir el acto asociado
         $appearers = $instrument->instrumentActs->flatMap(function ($instrumentAct) {
