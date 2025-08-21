@@ -252,7 +252,7 @@
 
                     </tr>
                 </thead>
-                <tbody>               
+                <tbody>
                     @foreach($appearers as $appearer)
                         <tr data-appearer-id="{{ $appearer->id }}"
                             data-instrument-act-id="{{ $appearer->instrument_act_id }}"
@@ -853,10 +853,6 @@
             clearBtn: true, // Muestra un botón para limpiar la fecha
             language: 'es', // Cambia el idioma (opcional, si tienes los archivos de idioma cargados)
         });
-
-        $('#authorization_date,#created_at,#created_at_act').datepicker('setDate', new Date());
-
-
     });
 
     $("#no").ForceNumericOnly();
@@ -873,6 +869,8 @@
             width: '100%',
             dropdownParent: $('#modal_add_act')
         });
+
+        $('#created_at_act').datepicker('setDate', new Date());
     });
 
 
@@ -895,11 +893,11 @@
             width: '100%',
             dropdownParent: $('#modal_add_appearer')
         });
-                
+
         // Si hay un acto, seleccionarlo
         const default_instrument_act_id = $('#default_instrument_act_id').val();
         if (default_instrument_act_id) {
-            
+
             console.log('selecciona', default_instrument_act_id)
             $('#instrument_act').val(default_instrument_act_id).trigger('change');
         }
